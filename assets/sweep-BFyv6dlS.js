@@ -1,0 +1,1 @@
+const S=[[0,20],[.4,20],[.7,25],[.8,50],[.9,60],[1,68]],a=20,i=68,u=75;function f(s){const t=S;if(s<=t[0][0])return t[0][1];for(let n=1;n<t.length;n++)if(s<=t[n][0]){const[e,E]=t[n-1],[c,o]=t[n],r=(s-e)/(c-e);return E+(o-E)*r}return t[t.length-1][1]}const M=s=>Math.min(1,Math.max(0,(s-a)/(i-a)));export{a as S,u as a,i as b,f as c,M as s};

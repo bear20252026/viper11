@@ -1,0 +1,1 @@
+const n=new Map,c=e=>fetch(e).then(t=>t.ok&&!t.headers.get("content-type")?.includes("text/html")?t.arrayBuffer():null).catch(()=>null);function o(e){typeof fetch!="function"||n.has(e)||n.set(e,c(e))}function f(e){const t=n.get(e);return t?(n.delete(e),t):typeof fetch=="function"?c(e):Promise.resolve(null)}export{o as e,f as t};

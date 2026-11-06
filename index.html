@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" data-game><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>VIPER 11 – Free Online Flight Simulator &amp; Fighter Jet Game</title>
+<meta name="description" content="Free online flight simulator in your browser. Fly the F-16, F-35C and Super Hornet: 12 missions, ranked dogfights, multiplayer and carrier launches. No download.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VIPER 11">
+<meta property="og:title" content="VIPER 11: a free fighter jet flight simulator in your browser">
+<meta property="og:description" content="Fly the F-16, F-35C and Super Hornet in your browser, free. 12 missions, ranked dogfights, a shared multiplayer sky and carrier launches. No download.">
+<meta property="og:url" content="https://viperoneone.com/">
+<meta property="og:image" content="https://viperoneone.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="An F-16 cockpit banking over a carpet of cumulus clouds at 16,000 feet">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VIPER 11: a free fighter jet flight simulator in your browser">
+<meta name="twitter:description" content="Fly the F-16, F-35C and Super Hornet in your browser, free. 12 missions, ranked dogfights, a shared multiplayer sky and carrier launches. No download.">
+<meta name="twitter:image" content="https://viperoneone.com/og.jpg">
+<!-- seo:start (the portals' builds drop this block: tools/deploy/build-portal.mjs) -->
+<link rel="canonical" href="https://viperoneone.com/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"VIPER 11","alternateName":["VIPER 11 flight simulator","viperoneone"],"url":"https://viperoneone.com/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"VIPER 11","alternateName":"VIPER 11 flight simulator","url":"https://viperoneone.com/","description":"A free fighter jet flight simulator that runs in your web browser. Fly the F-16C, F-35C and F/A-18E Super Hornet from seven real airfields and an aircraft carrier: a 12-mission campaign, 1v1 ranked dogfights, a shared multiplayer sky, a night strike and a daily landing challenge. Keyboard, gamepad, touch or HOTAS.","image":"https://viperoneone.com/og.jpg","genre":["Flight simulator","Combat flight simulator","Action"],"gamePlatform":["Web browser","PC","Mac","Mobile"],"applicationCategory":"Game","operatingSystem":"Any (web browser with WebGL2)","playMode":["SinglePlayer","MultiPlayer"],"numberOfPlayers":{"@type":"QuantitativeValue","minValue":1},"inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"},"author":{"@type":"Person","name":"Apek","url":"https://x.com/apekshik"},"publisher":{"@type":"Person","name":"Apek"}}</script>
+<!-- seo:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,400&display=swap">
+<style>
+  /* boot loader: on screen from the first paint, before any JS; src/ui/loader.ts adopts it */
+  html,body{margin:0;height:100%;background:#000;overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+  /* a phone: no page scroll, rubber-band or double-tap zoom (the menus still get taps) */
+  body{position:fixed;inset:0;touch-action:none}
+  #vp-boot{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;z-index:50;transition:opacity 1s ease}
+  #vp-boot svg{height:26vh;overflow:visible;margin-bottom:1vh}
+  #vp-boot .vp-ld-outline{fill:none;stroke:#f6f2ea;stroke-opacity:.35;stroke-width:.45;stroke-linejoin:round}
+  #vp-boot .vp-ld-fill{fill:#f6f2ea;fill-opacity:.9}
+  #vp-boot .vp-ld-spine{stroke:#000;stroke-opacity:.35;stroke-width:.5}
+  #vp-boot span{font-variant-numeric:lining-nums;font-family:var(--vp-display,'Cormorant Garamond','Cormorant',Garamond,'Iowan Old Style',Georgia,serif);font-weight:300;font-size:4vh;letter-spacing:.6em;padding-left:.6em;color:#f6f2ea}
+  #vp-boot small{font-family:var(--vp-display,'Cormorant Garamond','Cormorant',Garamond,Georgia,serif);font-style:italic;font-size:1.9vh;color:#f6f2ea;opacity:.55;animation:vp-pulse 2.4s ease-in-out infinite}
+  #vp-boot small b{font-weight:400;font-style:normal;margin-left:.4em;opacity:.8}
+  #vp-boot.done{opacity:0;pointer-events:none}
+  /* the words under the loader: what the game is, for players waiting and for search engines (real, visible text;
+     it leaves with the loader) */
+  #vp-boot .vp-about{position:absolute;left:0;right:0;bottom:max(3.2vh,env(safe-area-inset-bottom,0px));padding:0 max(16px,env(safe-area-inset-left,0px));text-align:center;color:#f6f2ea;font-family:var(--vp-display,'Cormorant Garamond','Cormorant',Garamond,Georgia,serif);pointer-events:auto}
+  #vp-boot .vp-about h1{margin:0 0 .45em;font-weight:300;font-size:max(13px,1.75vh);letter-spacing:.32em;text-transform:uppercase;opacity:.62;text-wrap:balance}
+  #vp-boot .vp-about p{margin:0 auto .7em;max-width:46em;font-style:italic;font-size:max(13px,1.7vh);line-height:1.45;opacity:.45;text-wrap:balance}
+  #vp-boot .vp-about nav{font-size:max(12px,1.45vh);letter-spacing:.08em;line-height:1.9;opacity:.4}
+  #vp-boot .vp-about a{color:inherit;text-decoration:none;white-space:nowrap;margin:0 .55em}
+  #vp-boot .vp-about a:hover{text-decoration:underline}
+  @media (max-height:520px){#vp-boot .vp-about p{display:none}}
+  @media (max-height:380px){#vp-boot .vp-about nav{display:none}}
+  @media (orientation:portrait){#vp-boot span{font-size:min(4vh,7vw)}#vp-boot small{font-size:min(1.9vh,3.8vw)}}
+  @keyframes vp-pulse{50%{opacity:.2}}
+</style>
+<script>
+  // ?uifont= (src/ui/style.ts UI_FONTS): the boot loader's words in that face from the first paint, before the game's CSS
+  (function () {
+    var m = /[?&]uifont=(rajdhani|b612|barlow|barlowc|oswald)(&|$)/i.exec(location.search); if (!m) return;
+    var f = { rajdhani: ['Rajdhani', 'rajdhani-500-normal'], b612: ['B612', 'b612-400-normal'], barlow: ['Barlow', 'barlow-400-normal'],
+      barlowc: ['Barlow Condensed', 'barlow-condensed-400-normal'], oswald: ['Oswald', 'oswald-400-normal'] }[m[1].toLowerCase()];
+    var s = document.createElement('style');
+    s.textContent = "@font-face{font-family:'" + f[0] + "';font-weight:300 400;font-display:block;src:url('/fonts/" + f[1] + ".woff2') format('woff2')}"
+      + ":root{--vp-display:'" + f[0] + "',system-ui,sans-serif}#vp-boot small{font-style:normal}";
+    document.head.appendChild(s);
+  })();
+</script>
+<!-- Vercel Web Analytics (page views, plus a few game events: src/ui/analytics.ts) -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+  <script type="module" crossorigin src="/assets/10-game-UOAWF34n.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/preload-helper-BXl3LOEh.js">
+  <link rel="modulepreload" crossorigin href="/assets/names-CAEwTE3R.js">
+  <link rel="modulepreload" crossorigin href="/assets/tiers-C6qrfcrB.js">
+  <link rel="modulepreload" crossorigin href="/assets/seasons-Dficm21H.js">
+  <link rel="modulepreload" crossorigin href="/assets/three.module-9D8i-8qh.js">
+  <link rel="modulepreload" crossorigin href="/assets/style-BfiekFYb.js">
+  <link rel="modulepreload" crossorigin href="/assets/nations-Dd4_VpyO.js">
+  <link rel="modulepreload" crossorigin href="/assets/presets-CRTA1czA.js">
+  <link rel="modulepreload" crossorigin href="/assets/liveries-DlyVyeOx.js">
+  <link rel="modulepreload" crossorigin href="/assets/ui-DhcwwDVI.js">
+  <link rel="modulepreload" crossorigin href="/assets/analytics-CihWztUc.js">
+  <link rel="modulepreload" crossorigin href="/assets/client-03ZXDG5M.js">
+  <link rel="modulepreload" crossorigin href="/assets/canopy-S6U8hAzY.js">
+  <link rel="modulepreload" crossorigin href="/assets/BufferGeometryUtils-y2z5xeEV.js">
+  <link rel="modulepreload" crossorigin href="/assets/textures-C18kvX-p.js">
+  <link rel="modulepreload" crossorigin href="/assets/exterior-CIROtG7B.js">
+  <link rel="modulepreload" crossorigin href="/assets/loft-DpGWJz4i.js">
+  <link rel="modulepreload" crossorigin href="/assets/paintkit-B10y6Ppt.js">
+  <link rel="modulepreload" crossorigin href="/assets/motion-usu7YCPa.js">
+  <link rel="modulepreload" crossorigin href="/assets/f16-CpBbns-k.js">
+  <link rel="modulepreload" crossorigin href="/assets/paint-EV97hhzF.js">
+  <link rel="modulepreload" crossorigin href="/assets/prefs-DxUZR5rR.js">
+  <link rel="modulepreload" crossorigin href="/assets/state-CBErpm8K.js">
+  <link rel="modulepreload" crossorigin href="/assets/aura-DfM1zNP_.js">
+  <link rel="modulepreload" crossorigin href="/assets/index-DxQAg0pk.js">
+  <link rel="modulepreload" crossorigin href="/assets/presets-CaXGfgBD.js">
+  <link rel="modulepreload" crossorigin href="/assets/geo-DYayEwnZ.js">
+  <link rel="modulepreload" crossorigin href="/assets/dramatic-Bjn2YWf5.js">
+  <link rel="modulepreload" crossorigin href="/assets/sweep-BFyv6dlS.js">
+  <link rel="modulepreload" crossorigin href="/assets/aero-DPrg6YvJ.js">
+  <link rel="modulepreload" crossorigin href="/assets/voices-BQzjSRgM.js">
+  <link rel="modulepreload" crossorigin href="/assets/tuning-CNW1LmJC.js">
+  <link rel="modulepreload" crossorigin href="/assets/f16-Do1P0SBM.js">
+  <link rel="modulepreload" crossorigin href="/assets/geodesy-DdRllvBP.js">
+  <link rel="modulepreload" crossorigin href="/assets/radioTheaters-C4qAp8HO.js">
+  <link rel="modulepreload" crossorigin href="/assets/types-CBQ1wE-q.js">
+  <link rel="modulepreload" crossorigin href="/assets/profile-Dknl-rK0.js">
+  <link rel="modulepreload" crossorigin href="/assets/botNames-Cepkgf6j.js">
+  <link rel="modulepreload" crossorigin href="/assets/pause-CoKDnMUF.js">
+  <link rel="modulepreload" crossorigin href="/assets/earlyFetch-CkKlHYEY.js">
+  <link rel="modulepreload" crossorigin href="/assets/blueNoise-Xopz6Ulp.js">
+  <link rel="modulepreload" crossorigin href="/assets/shared-oZu7p6SI.js">
+  <link rel="modulepreload" crossorigin href="/assets/takramClouds-Cui9DI1f.js">
+  <link rel="modulepreload" crossorigin href="/assets/lab-CeYNtiSK.js">
+  <link rel="modulepreload" crossorigin href="/assets/watch-C_DBljyX.js">
+  <link rel="modulepreload" crossorigin href="/assets/controls-DjtOF8By.js">
+  <link rel="modulepreload" crossorigin href="/assets/grips-B3C_TaW7.js">
+  <link rel="modulepreload" crossorigin href="/assets/index-BnY1vUOb.js">
+  <link rel="modulepreload" crossorigin href="/assets/lighting-DLOaW5gk.js">
+  <link rel="modulepreload" crossorigin href="/assets/atmosphere-DStunFO5.js">
+  <link rel="modulepreload" crossorigin href="/assets/sky-O2bTkI6r.js">
+  <link rel="modulepreload" crossorigin href="/assets/index-BXr6sey4.js">
+  <link rel="modulepreload" crossorigin href="/assets/dims-CGpQssBc.js">
+  <link rel="modulepreload" crossorigin href="/assets/canopyShape-wB2WOyPG.js">
+  <link rel="modulepreload" crossorigin href="/assets/skin-EJl6slvg.js">
+  <link rel="modulepreload" crossorigin href="/assets/dims-D4R27mEd.js">
+  <link rel="modulepreload" crossorigin href="/assets/dims-CLm24y1E.js">
+  <link rel="modulepreload" crossorigin href="/assets/dims-9emkWdW5.js">
+  <link rel="modulepreload" crossorigin href="/assets/index-BtbAcqGc.js">
+  <link rel="modulepreload" crossorigin href="/assets/indexGeometry-CU6LZ1FI.js">
+  <link rel="modulepreload" crossorigin href="/assets/parked-BH5N_nTQ.js">
+  <link rel="modulepreload" crossorigin href="/assets/comic-CKsmzLfz.js">
+  <link rel="modulepreload" crossorigin href="/assets/paint-BjJ-hqG3.js">
+  <link rel="modulepreload" crossorigin href="/assets/materials-KqbXDsra.js">
+  <link rel="modulepreload" crossorigin href="/assets/model-cvFNnR7v.js">
+  <link rel="modulepreload" crossorigin href="/assets/loadout-CoH-Nb6N.js">
+  <link rel="modulepreload" crossorigin href="/assets/missileModels-C7371RIv.js">
+  <link rel="modulepreload" crossorigin href="/assets/title--Bw1VCd9.js">
+  <link rel="modulepreload" crossorigin href="/assets/supermanoeuvre-1FclUohw.js">
+  <link rel="modulepreload" crossorigin href="/assets/catapult-BanG4ufl.js">
+  <link rel="modulepreload" crossorigin href="/assets/input-DcieSVgc.js">
+  <link rel="modulepreload" crossorigin href="/assets/util-CBTLGtLT.js">
+  <link rel="modulepreload" crossorigin href="/assets/radio-DAYHNwBk.js">
+  <link rel="modulepreload" crossorigin href="/assets/RoundedBoxGeometry-DJ-RGvuO.js">
+  <link rel="modulepreload" crossorigin href="/assets/hangar-CyD1Ik6O.js">
+  <link rel="modulepreload" crossorigin href="/assets/pops-BZ63hKwn.js">
+  <link rel="modulepreload" crossorigin href="/assets/stage-BfNtQxhI.js">
+  <link rel="modulepreload" crossorigin href="/assets/env-CheJt8Fq.js">
+  <link rel="modulepreload" crossorigin href="/assets/turntable-p6Kz8y9b.js">
+  <link rel="modulepreload" crossorigin href="/assets/haze-BC0aAVvL.js">
+  <link rel="modulepreload" crossorigin href="/assets/runway-CuX9E3QW.js">
+  <link rel="modulepreload" crossorigin href="/assets/world-BUHQ0YjS.js">
+  <link rel="modulepreload" crossorigin href="/assets/timeOfDay-DUpFJUtk.js">
+  <link rel="modulepreload" crossorigin href="/assets/config-B95Q2psu.js">
+  <link rel="modulepreload" crossorigin href="/assets/awacs-bH3Ag8tK.js">
+  <link rel="modulepreload" crossorigin href="/assets/sponsors-Iy2Ht5Zr.js">
+  <link rel="modulepreload" crossorigin href="/assets/index-sj4KY1GI.js">
+  <link rel="modulepreload" crossorigin href="/assets/impressions-DYySqvKX.js">
+  <link rel="modulepreload" crossorigin href="/assets/sponsors-CL1bPDCY.js">
+  <link rel="modulepreload" crossorigin href="/assets/rig-CuKCjJOI.js">
+  <link rel="modulepreload" crossorigin href="/assets/crowdLine-BWiESlzq.js">
+</head>
+<body>
+<div id="vp-boot" class="vp-loading">
+  <svg viewBox="0 0 100 160" aria-hidden="true">
+    <defs><clipPath id="vpboot"><rect x="0" y="160" width="100" height="160"/></clipPath></defs>
+    <path class="vp-ld-outline" d="M50,2 L51.6,7 L53.2,14 L54.2,22 L54.8,31 L55.2,40 L57.5,50 L60.5,60 L93,93 L93,98.5 L96,98.5 L96,103 L62,104.5 L60.5,112 L82,136 L83,144 L60,141 L57,150 L54,156 L50,157 L46,156 L43,150 L40,141 L17,144 L18,136 L39.5,112 L38,104.5 L4,103 L4,98.5 L7,98.5 L7,93 L39.5,60 L42.5,50 L44.8,40 L45.2,31 L45.8,22 L46.8,14 L48.4,7 L50,2 Z"/>
+    <path class="vp-ld-fill" clip-path="url(#vpboot)" d="M50,2 L51.6,7 L53.2,14 L54.2,22 L54.8,31 L55.2,40 L57.5,50 L60.5,60 L93,93 L93,98.5 L96,98.5 L96,103 L62,104.5 L60.5,112 L82,136 L83,144 L60,141 L57,150 L54,156 L50,157 L46,156 L43,150 L40,141 L17,144 L18,136 L39.5,112 L38,104.5 L4,103 L4,98.5 L7,98.5 L7,93 L39.5,60 L42.5,50 L44.8,40 L45.2,31 L45.8,22 L46.8,14 L48.4,7 L50,2 Z"/>
+    <line x1="50" y1="40" x2="50" y2="150" class="vp-ld-spine"/>
+  </svg>
+  <span>VIPER 11</span><small>loading <b>0%</b></small>
+  <!-- seo:start -->
+  <div class="vp-about">
+    <h1>Free online flight simulator · fighter jets in your browser</h1>
+    <p>Fly the F-16, F-35C and F/A-18E Super Hornet from seven real airfields and an aircraft carrier. Twelve combat missions, 1v1 ranked dogfights, a shared multiplayer sky, keyboard, gamepad, touch or HOTAS. Free, no download.</p>
+    <nav aria-label="About the game"><a href="/play/flight-simulator/">Flight simulator</a> <a href="/play/fighter-jet-game/">Fighter jet game</a> <a href="/play/f16-simulator/">F-16 simulator</a> <a href="/play/dogfight/">Dogfights</a> <a href="/play/missions/">Missions</a> <a href="/play/carrier/">Carrier</a> <a href="/play/hotas/">HOTAS</a> <a href="/notes/">How it’s made</a></nav>
+  </div>
+  <!-- seo:end -->
+</div>
+<script>
+  // creep the fill toward ~12% while the game's code downloads; the game takes over from here
+  (function () {
+    var rect = document.querySelector('#vp-boot rect'), pct = document.querySelector('#vp-boot b');
+    var boot = window.__vpBoot = { shown: 0, stopped: false };
+    var t0 = performance.now(), from = 0;
+    // an airport or plane change hands its loader over the reload (src/ui/loader.ts handOff)
+    try {
+      var h = JSON.parse(sessionStorage.getItem('vp:loader') || 'null');
+      sessionStorage.removeItem('vp:loader');
+      if (h && Date.now() - h.at < 15000) { from = Math.min(0.5, h.shown || 0); if (h.label) { boot.label = h.label; document.querySelector('#vp-boot small').firstChild.nodeValue = h.label + ' '; } }
+    } catch (e) {}
+    function tick(now) {
+      if (boot.stopped) return;
+      boot.shown = from + (Math.max(0.12, from + 0.08) - from) * (1 - Math.exp(-(now - t0) / 2500));
+      rect.setAttribute('y', (160 - 160 * boot.shown).toFixed(2));
+      pct.textContent = Math.round(boot.shown * 100) + '%';
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    // the game's code never took over (a deploy landed mid-load: this page's chunks are gone; or a chunk failed):
+    // reload once, at most once in 3 minutes, so a real error can't loop. Never while the page is on its way out
+    // (a pick that loads another page, ./frontDoor.ts switchTo, or the tab closing): the loads it cancels fail too,
+    // and a reload then would take the player back to the page they just left.
+    boot.leaving = false;
+    var leave = function () { boot.leaving = true; };
+    window.addEventListener('viper:before-switch', leave);
+    window.addEventListener('pagehide', leave);
+    window.addEventListener('pageshow', function (ev) { if (ev.persisted) boot.leaving = false; });
+    function retry(why, msg) {
+      if (boot.leaving) return;
+      try {
+        var last = +(sessionStorage.getItem('vp:bootRetry') || 0);
+        if (Date.now() - last < 180000) return;
+        sessionStorage.setItem('vp:bootRetry', String(Date.now()));
+        sessionStorage.setItem('vp:bootRetryWhy', why);   // PostHog hears it from the reloaded page (src/ui/analytics.ts)
+        if (msg) sessionStorage.setItem('vp:bootRetryMsg', String(msg).slice(0, 160));
+      } catch (e) { return; }
+      try { window.va && window.va('event', { name: 'boot_retry', data: { why: why } }); } catch (e) {}
+      location.reload();
+    }
+    // stalled: the game hasn't taken over after 45 s and nothing has come in for 15 s (a slow line still downloading the
+    // game's code is left to finish: a reload would start it over). At 150 s it reloads whatever.
+    var t00 = Date.now(), seen = 0, quietSince = Date.now();
+    var stallCheck = function () {
+      if (boot.stopped) return;
+      var n = 0;
+      try { n = performance.getEntriesByType('resource').length; } catch (e) {}
+      if (n !== seen) { seen = n; quietSince = Date.now(); }
+      if (Date.now() - t00 > 150000 || (Date.now() - t00 > 45000 && Date.now() - quietSince > 15000)) { retry('stalled'); return; }
+      setTimeout(stallCheck, 2500);
+    };
+    setTimeout(stallCheck, 2500);
+    // a later chunk (a menu page, a mode) that won't load: Vite's own signal. A deploy since this page loaded (its chunks
+    // are gone: the live page names another bundle) reloads into the new version; otherwise (a dropped request) it
+    // reloads only while the game is still loading (boot.stopped not yet, or the first 60 s), so a flight is never cut short
+    var bundle = (function () { var s = document.querySelector('script[type="module"][src*="10-game"]'); var m = s && /10-game-[A-Za-z0-9_-]+\.js/.exec(s.src); return m ? m[0] : null; })();
+    window.addEventListener('vite:preloadError', function (ev) {
+      if (boot.leaving) return;
+      ev.preventDefault();
+      var msg = ev.payload && ev.payload.message;
+      var early = !boot.stopped || performance.now() < 60000;
+      if (!bundle) { retry('chunk', msg); return; }
+      fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (html) {
+        var live = /10-game-[A-Za-z0-9_-]+\.js/.exec(html);
+        if (live && live[0] !== bundle) retry('chunk-deploy', msg);
+        else if (early) retry('chunk', msg);
+        else try { window.posthog && window.posthog.capture('chunk_error', { msg: msg ? String(msg).slice(0, 160) : null }); } catch (e) {}
+      }, function () { if (early) retry('chunk', msg); });
+    });
+    // a script of the game's that fails to load (404 after a deploy): at once, not after the 45 s
+    window.addEventListener('error', function (ev) {
+      var t = ev.target;
+      // (the game's own files only: an outside script an ad blocker stops, PostHog's or a portal SDK's, is no reason to reload)
+      if (!boot.stopped && t && (t.tagName === 'SCRIPT' || (t.tagName === 'LINK' && /preload/.test(t.rel || ''))) && String(t.src || t.href || '').indexOf(location.origin) === 0) retry('chunk', String(t.src || t.href || '').split('/').pop());
+    }, true);
+    boot.retry = retry;
+  })();
+</script>
+</body></html>

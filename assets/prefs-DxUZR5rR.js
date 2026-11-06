@@ -1,0 +1,1 @@
+const e="viper:prefs";function r(){try{const t=JSON.parse(localStorage.getItem(e)??"{}");return t&&typeof t=="object"?t:{}}catch{return{}}}function o(t){try{localStorage.setItem(e,JSON.stringify({...r(),...t}))}catch{}}export{r as l,o as s};
